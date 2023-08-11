@@ -32,7 +32,7 @@ class Application(tk.Frame):
 
         # Fire Dynamics AI
         path = "FDAI_grey.jpg"
-        open_image = Image.open(path).resize((60, 90), Image.LANCZOS)
+        open_image = Image.open(path).resize((60, 90), Image.Resampling.LANCZOS) # Image.ANTIALIAS deprecated to LANCZOS
 
         # Create the tab control
         tabControl = ttk.Notebook(self.master)
