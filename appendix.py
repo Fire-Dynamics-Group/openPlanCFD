@@ -16,6 +16,7 @@ def string_to_list_and_clean(string):  ## it reads the lists in the excel sheet 
     return list2
 
 from escape_probability import return_dataset_dict_from_curve
+# TODO: remove need for spreadsheets
 def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x10'):
     # pass
     Probability_Of_3m_Tenability_Limit = 0.3
@@ -94,12 +95,12 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
             try:    ##tries to gcreate spreadsheet
                 dest_dir = f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}"  ### these lines copy the base model and paste it in the new model directory
                 src_file = f"{local_folder}/template_results.xlsx"
-                shutil.copy(src_file, dest_dir)
-                os.rename(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/template_results.xlsx", f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}")
-                workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}") # creates spreadsheet for results
+                # shutil.copy(src_file, dest_dir)
+                # os.rename(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/template_results.xlsx", f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}")
+                # workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}") # creates spreadsheet for results
             except FileExistsError:
                 print("file alaready exists - overwriting that file")
-            workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}") # creates spreadsheet for results
+            # workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}") # creates spreadsheet for results
             while m < len(Model_List):  # for each model needed for each scenario - model list contains 4 models
                 generate_data(
                                 f"{Model_List[m]}", 
@@ -115,7 +116,7 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
                                 FED_Heat_Tenability_Limit_NS,
                                 Radiation_Tenability_Limit_S,
                                 Temp_Tenability_Limit_S,
-                                workbook,
+                                # workbook,
                                 TC_From_Bedrooms,
                                 pre_move_dict,
                                 TD_From_Bedrooms,
@@ -137,8 +138,8 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
                 
                 m=m+1
             # TODO: add either further workbooks; or further sheets
-            results_file = file_name
-            workbook.save(f'{results_dir}\{results_file}')
+            # results_file = file_name
+            # workbook.save(f'{results_dir}\{results_file}')
             workbook.close()
             n = n+1
         # do something num_runs; complete 1000 times

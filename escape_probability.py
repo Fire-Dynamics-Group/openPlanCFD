@@ -84,6 +84,7 @@ def chart_dataset_from_curve(pre_movement_numbers, population, weights, list_of_
         ax2.plot(population, weights, 'orange', linewidth=1.0)
         plt.tight_layout()
         plt.show()
+        pass
 
 def return_dataset_dict_from_curve(path_to_file='data\escapeProbability.xlsx', number_of_runs=100): # should be specific to current folder!
     pre_movement_numbers, population, weights, list_of_numbers = generate_dataset_from_curve(path_to_file, number_of_runs)
@@ -91,9 +92,9 @@ def return_dataset_dict_from_curve(path_to_file='data\escapeProbability.xlsx', n
 
 
 if __name__ == '__main__':
-    # path_to_file = 'data\escapeProbability.xlsx'
-    # pre_movement_numbers, population, weights, list_of_numbers = generate_dataset_from_curve(path_to_file, 10000) #100000
-    # print(dict(Counter(pre_movement_numbers)))
-    # # pop
-    # chart_dataset_from_curve(pre_movement_numbers, population, weights, list_of_numbers)
-    print(return_dataset_dict_from_curve(path_to_file='data\escapeProbability.xlsx', number_of_runs=100))
+    path_to_file = 'data\escapeProbability.xlsx'
+    pre_movement_numbers, population, weights, list_of_numbers = generate_dataset_from_curve(path_to_file, 100) #100000
+    print(dict(Counter(pre_movement_numbers)))
+    # pop
+    chart_dataset_from_curve(pre_movement_numbers, population, weights, list_of_numbers)
+    # print(return_dataset_dict_from_curve(path_to_file='data\escapeProbability.xlsx', number_of_runs=100))
