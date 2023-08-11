@@ -85,71 +85,82 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
         
         pre_move_dict = return_dataset_dict_from_curve(number_of_runs=No_Runs)
         Model_List = ["CC1", "CC2", "PD1", "PD2"]
+        models_object = {}
+        # n=0
+        # while n < len(Scenario_Names): # for each scenario in the list of the scenario names
+        results_dir = f"{current_folder_path}/{Project_Name}/{Scenario_Names[0]}"
+        m=0
+        #     file_name = f'{Scenario_Names[n]}_{num_runs}_Results.xlsx'
 
-        n=0
-        while n < len(Scenario_Names): # for each scenario in the list of the scenario names
-            results_dir = f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}"
-            m=0
-            file_name = f'{Scenario_Names[n]}_{num_runs}_Results.xlsx'
+        #     try:    ##tries to gcreate spreadsheet
+        #         dest_dir = f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}"  ### these lines copy the base model and paste it in the new model directory
+        #         src_file = f"{local_folder}/template_results.xlsx"
+        #         # shutil.copy(src_file, dest_dir)
+        #         # os.rename(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/template_results.xlsx", f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}")
+        #         # workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}") # creates spreadsheet for results
+        #     except FileExistsError:
+        #         print("file alaready exists - overwriting that file")
 
-            try:    ##tries to gcreate spreadsheet
-                dest_dir = f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}"  ### these lines copy the base model and paste it in the new model directory
-                src_file = f"{local_folder}/template_results.xlsx"
-                # shutil.copy(src_file, dest_dir)
-                # os.rename(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/template_results.xlsx", f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}")
-                # workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}") # creates spreadsheet for results
-            except FileExistsError:
-                print("file alaready exists - overwriting that file")
             # workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{file_name}") # creates spreadsheet for results
-            while m < len(Model_List):  # for each model needed for each scenario - model list contains 4 models
-                generate_data(
-                                f"{Model_List[m]}", 
-                                f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{Model_List[m]}/{Model_List[m]}_devc.csv", 
-                                f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{Model_List[m]}/{Model_List[m]}_hrr.csv", 
-                                f"{Scenario_Names[n]}",
-                                results_dir, 
-                                Project_Name,
-                                No_Runs,
-                                FED_Toxc_Tenability_Limit,
-                                DensityCM,
-                                DCO,
-                                FED_Heat_Tenability_Limit_NS,
-                                Radiation_Tenability_Limit_S,
-                                Temp_Tenability_Limit_S,
-                                # workbook,
-                                TC_From_Bedrooms,
-                                pre_move_dict,
-                                TD_From_Bedrooms,
-                                Probability_Occupant_in_Bedroom,
-                                Probability_Occupant_in_Lounge,
-                                TD_From_Lounges,
-                                TC_From_Lounges,
-                                Probability_Occupant_in_Kitchen,
-                                TD_From_Kitchens,
-                                TC_From_Kitchens,
-                                Probability_Of_3m_Tenability_Limit,
-                                High_Visibility_Tenability_Limit,
-                                Low_Visibility_Tenability_Limit,
-                                detection_activation_value,
-                                DensityCD,
-                                FED_RAD_tol,
-                                VE
-                            )
+        while m < len(Model_List):  # for each model needed for each scenario - model list contains 4 models
+            escape_fraction, trapped_fraction, harmed_fraction = generate_data(
+                            f"{Model_List[m]}", 
+                            f"{current_folder_path}/{Project_Name}/{Scenario_Names[0]}/{Model_List[m]}/{Model_List[m]}_devc.csv", 
+                            f"{current_folder_path}/{Project_Name}/{Scenario_Names[0]}/{Model_List[m]}/{Model_List[m]}_hrr.csv", 
+                            f"{Scenario_Names[0]}",
+                            results_dir, 
+                            Project_Name,
+                            No_Runs,
+                            FED_Toxc_Tenability_Limit,
+                            DensityCM,
+                            DCO,
+                            FED_Heat_Tenability_Limit_NS,
+                            Radiation_Tenability_Limit_S,
+                            Temp_Tenability_Limit_S,
+                            # workbook,
+                            TC_From_Bedrooms,
+                            pre_move_dict,
+                            TD_From_Bedrooms,
+                            Probability_Occupant_in_Bedroom,
+                            Probability_Occupant_in_Lounge,
+                            TD_From_Lounges,
+                            TC_From_Lounges,
+                            Probability_Occupant_in_Kitchen,
+                            TD_From_Kitchens,
+                            TC_From_Kitchens,
+                            Probability_Of_3m_Tenability_Limit,
+                            High_Visibility_Tenability_Limit,
+                            Low_Visibility_Tenability_Limit,
+                            detection_activation_value,
+                            DensityCD,
+                            FED_RAD_tol,
+                            VE
+                        )
                 
-                m=m+1
+            models_object[Model_List[m]] = {
+                                            "escape_fraction": escape_fraction, 
+                                            "trapped_fraction": trapped_fraction, 
+                                            "harmed_fraction": harmed_fraction
+                                            }
+            m=m+1
             # TODO: add either further workbooks; or further sheets
-            # results_file = file_name
-            # workbook.save(f'{results_dir}\{results_file}')
-            workbook.close()
-            n = n+1
+        # return fractions from all 4 models
+        return models_object
         # do something num_runs; complete 1000 times
         # get average per num_runs
 
     
-    run_list = []
-    for num_runs in [100, 1000, 10000, 100000, 1000000]:
-        complete_runs(num_runs)
-    
+    run_list = {}
+    for runs_per_lap in [100, 1000]: #, 10000, 100000, 1000000]:
+        run_list[runs_per_lap] = []
+        for num_runs in [runs_per_lap for i in range(1000)]:
+            models_object = complete_runs(num_runs)
+            run_list[runs_per_lap].append(models_object)
+        # get average
+        pass
+
+    pass
+
     # TODO: chart using run_list
 
 if __name__ == "__main__":
