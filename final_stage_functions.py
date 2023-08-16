@@ -52,9 +52,9 @@ def generate_data(
         FED_Toxc_Tenability_Limit,
         DensityCM,
         DCO,
-        FED_Heat_Tenability_Limit_NS,
-        Radiation_Tenability_Limit_S,
-        Temp_Tenability_Limit_S,
+        FED_Heat_Tenability_Limit_NS, # 1.0
+        Radiation_Tenability_Limit_S, # 2.5
+        Temp_Tenability_Limit_S, # 60
         # workbook,
         TC_From_Bedrooms,
         Pre_dict,
@@ -204,7 +204,7 @@ def generate_data(
     max_heat_FED = []
     max_toxc_FED = []
     room_list = []
-    '''# pandas replacing excel #'''
+    '''# lists replacing excel #'''
     run_number = []
     pre_plus_det_time = []
     random_vis_ten = []

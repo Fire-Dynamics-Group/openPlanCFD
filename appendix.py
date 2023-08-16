@@ -145,6 +145,18 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
             m=m+1
             # TODO: add either further workbooks; or further sheets
         # return fractions from all 4 models
+        fire_remains = 0.23
+        PD_no_sprinklers = fire_remains * 0.11
+        models_object["PD"] = {
+                                "trapped_fraction": PD_no_sprinklers*models_object["PD2"]["trapped_fraction"], 
+                                "harmed_fraction": PD_no_sprinklers*models_object["PD2"]["harmed_fraction"]            
+        }
+        CC_door_open = fire_remains * 0.6
+        CC_door_closed = fire_remains * 0.4
+        models_object["CC"] = {
+                                "trapped_fraction": CC_door_open*models_object["CC1"]["trapped_fraction"] + CC_door_closed*models_object["CC2"]["trapped_fraction"], 
+                                "harmed_fraction": CC_door_open*models_object["CC1"]["harmed_fraction"] + CC_door_closed*models_object["CC2"]["harmed_fraction"]          
+        }
         return models_object
         # do something num_runs; complete 1000 times
         # get average per num_runs
@@ -153,15 +165,17 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
     run_list = {}
     for runs_per_lap in [100, 1000]: #, 10000, 100000, 1000000]:
         run_list[runs_per_lap] = []
-        for num_runs in [runs_per_lap for i in range(1000)]:
+        for num_runs in [runs_per_lap for i in range(100)]:
             models_object = complete_runs(num_runs)
             run_list[runs_per_lap].append(models_object)
         # get average
         pass
-
+    # get the output
+    # chart
     pass
 
-    # TODO: chart using run_list
+    # TODO: calc event tree for cc1 and cc2; and pd1 and pd2
+    # TODO: how to run on modelling comp or other?
 
 if __name__ == "__main__":
     run_appendix()
