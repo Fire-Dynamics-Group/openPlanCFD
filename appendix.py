@@ -1,5 +1,6 @@
 from constants import current_folder_path
 from final_stage_functions import generate_data
+from appendix_charts import prep_data, run_appendix_charts
 import openpyxl
 import shutil
 import os
@@ -144,38 +145,52 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
                                             }
             m=m+1
             # TODO: add either further workbooks; or further sheets
-        # return fractions from all 4 models
+        # return fractions from all 4 models - only PD and CC needed
+        event_tree_obj = {}
         fire_remains = 0.23
         PD_no_sprinklers = fire_remains * 0.11
-        models_object["PD"] = {
+        event_tree_obj["PD"] = {
                                 "trapped_fraction": PD_no_sprinklers*models_object["PD2"]["trapped_fraction"], 
                                 "harmed_fraction": PD_no_sprinklers*models_object["PD2"]["harmed_fraction"]            
         }
         CC_door_open = fire_remains * 0.6
         CC_door_closed = fire_remains * 0.4
-        models_object["CC"] = {
+        event_tree_obj["CC"] = {
                                 "trapped_fraction": CC_door_open*models_object["CC1"]["trapped_fraction"] + CC_door_closed*models_object["CC2"]["trapped_fraction"], 
                                 "harmed_fraction": CC_door_open*models_object["CC1"]["harmed_fraction"] + CC_door_closed*models_object["CC2"]["harmed_fraction"]          
         }
-        return models_object
+        return event_tree_obj
         # do something num_runs; complete 1000 times
         # get average per num_runs
 
     
     run_list = {}
-    for runs_per_lap in [100, 1000]: #, 10000, 100000, 1000000]:
+    stages = [100, 500, 1000, 5000, 10000, 50000, 100000]
+    multiplier = 1000
+    stages = [100] # to be commented out
+    multiplier = 100
+    for runs_per_lap in stages: 
         run_list[runs_per_lap] = []
-        for num_runs in [runs_per_lap for i in range(100)]:
+        for num_runs in [runs_per_lap for i in range(multiplier)]:
             models_object = complete_runs(num_runs)
             run_list[runs_per_lap].append(models_object)
+            if len(run_list[runs_per_lap]) % 10 ==0:
+                print(f'{runs_per_lap}: {len(run_list[runs_per_lap])}')
         # get average
         pass
     # get the output
     # chart
+    # TODO: save runs list to txt file
+    chart_data = prep_data(data=run_list)
+    # TODO: run and save chart
+    run_appendix_charts(chart_data)
     pass
-
-    # TODO: calc event tree for cc1 and cc2; and pd1 and pd2
-    # TODO: how to run on modelling comp or other?
+    
+    # TODO: prep for modelling comp
+    # TODO: should output file with PD, CC only
 
 if __name__ == "__main__":
-    run_appendix()
+    # TODO: should queue both NHBC studies
+    projects = ['NHBC 8x10', 'NHBC 12x16']
+    for project in projects:
+        run_appendix(project_name=project)
