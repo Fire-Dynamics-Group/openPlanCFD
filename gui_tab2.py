@@ -29,8 +29,7 @@ class Tab2Content:
         self.options_frame = tk.LabelFrame(self.master, text="Advanced Options - Feel Free to Leave as default")
         self.options_frame.grid(row=current_row, column=0, columnspan=2)        
 
-        # does this need is sprinklered tick?
-        # is sprinklered option
+
 
         current_row += 1
         self.label_non_sprinkler_hrr_peak = tk.Label(self.options_frame, text="Non Sprinklered Peak Heat Release Rate (kW): ", width=self.label_width, anchor="e")

@@ -37,7 +37,7 @@ def run_appendix_charts(points_object):
     if __name__ == "__main__":
         plt.show()
     else:
-        pass
+        plt.show()
         # should save locally
         
 

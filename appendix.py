@@ -2,8 +2,7 @@ from constants import current_folder_path
 from final_stage_functions import generate_data
 from appendix_charts import prep_data, run_appendix_charts
 import openpyxl
-import shutil
-import os
+import json
 
 # TODO: 100, 1000, 10000, 100000, 1mil *1k runs
 # stage 3 but only the probability
@@ -167,7 +166,7 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
     run_list = {}
     stages = [100, 500, 1000, 5000, 10000, 50000, 100000]
     multiplier = 1000
-    stages = [100] # to be commented out
+    stages = [100, 500, 1000] # to be commented out
     multiplier = 100
     for runs_per_lap in stages: 
         run_list[runs_per_lap] = []
@@ -175,15 +174,20 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
             models_object = complete_runs(num_runs)
             run_list[runs_per_lap].append(models_object)
             if len(run_list[runs_per_lap]) % 10 ==0:
-                print(f'{runs_per_lap}: {len(run_list[runs_per_lap])}')
+                print(f'###{runs_per_lap}: {len(run_list[runs_per_lap])}###')
         # get average
+        chart_data = prep_data(data=run_list)
+        jsonString = json.dumps(chart_data)
+        jsonFile = open(f"{project_name}_etal.json", "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
         pass
     # get the output
     # chart
     # TODO: save runs list to txt file
-    chart_data = prep_data(data=run_list)
+    # chart
     # TODO: run and save chart
-    run_appendix_charts(chart_data)
+    # run_appendix_charts(chart_data)
     pass
     
     # TODO: prep for modelling comp

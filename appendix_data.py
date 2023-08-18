@@ -5,4 +5,4 @@ for key in list(data_2.keys()):
     data[key] = data_2[key]
 
 
-# print(data[500])
+print(data[500])
