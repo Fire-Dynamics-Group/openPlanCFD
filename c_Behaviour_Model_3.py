@@ -548,8 +548,12 @@ def generate_data(
 
 
 ''' save images to target output folder '''
-def run_stage_three(current_folder_path=current_folder_path, project_name='NHBC 8x10'):
+# TODO: get project name and current folder from path
+def run_stage_three(cfd_output_path, current_folder_path=current_folder_path):
+
     ## 1. Variables
+
+    project_name = os.path.basename(cfd_output_path)
 
     No_Runs = 10000
     Probability_Of_3m_Tenability_Limit = 0.3
@@ -581,15 +585,10 @@ def run_stage_three(current_folder_path=current_folder_path, project_name='NHBC 
     VE = 25
 
     # change to test cfd output - when ran from this file
+    # TODO: separate current folder path -> where python is ran from and where cfd data is stored
     local_folder = current_folder_path
-    if __name__ == '__main__':
-        current_folder_path = f"{current_folder_path}/CFD Test Output"
-    #     workbook_path = f"{current_folder_path}/CFD Test Output/Roneo Corner - Smallest Flat/Roneo Corner - Smallest Flat Variables.xlsx"
-    # else:
-    # project name: 
-    # project_name = 'Roneo Corner - Smallest Flat'
-    # path given will include project name
-    workbook_path = f"{current_folder_path}/{project_name}/{project_name} Variables.xlsx" # create spreadsheet and worksheet. This will be on the drive so other parts of the program can read it. 
+
+    workbook_path = f"{cfd_output_path}/{project_name} Variables.xlsx" # create spreadsheet and worksheet. This will be on the drive so other parts of the program can read it. 
     workbook = openpyxl.load_workbook(workbook_path) # create spreadsheet and worksheet. This will be on the drive so other parts of the program can read it. 
 
     worksheet = workbook.active
@@ -626,23 +625,23 @@ def run_stage_three(current_folder_path=current_folder_path, project_name='NHBC 
 
     n=0
     while n < len(Scenario_Names): # for each scenario in the list of the scenario names
-        results_dir = f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}"
+        results_dir = f"{cfd_output_path}/{Scenario_Names[n]}"
         m=0
 
         try:    ##tries to gcreate spreadsheet
-            dest_dir = f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}"  ### these lines copy the base model and paste it in the new model directory
+            dest_dir = f"{cfd_output_path}/{Scenario_Names[n]}"  ### these lines copy the base model and paste it in the new model directory
             src_file = f"{local_folder}/template_results.xlsx"
             shutil.copy(src_file, dest_dir)
-            os.rename(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/template_results.xlsx", f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{Scenario_Names[n]}_Results.xlsx")
-            workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{Scenario_Names[n]}_Results.xlsx") # creates spreadsheet for results
+            os.rename(f"{cfd_output_path}/{Scenario_Names[n]}/template_results.xlsx", f"{cfd_output_path}/{Scenario_Names[n]}/{Scenario_Names[n]}_Results.xlsx")
+            workbook = openpyxl.load_workbook(f"{cfd_output_path}/{Scenario_Names[n]}/{Scenario_Names[n]}_Results.xlsx") # creates spreadsheet for results
         except FileExistsError:
             print("file alaready exists - overwriting that file")
-        workbook = openpyxl.load_workbook(f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{Scenario_Names[n]}_Results.xlsx") # creates spreadsheet for results
+        workbook = openpyxl.load_workbook(f"{cfd_output_path}/{Scenario_Names[n]}/{Scenario_Names[n]}_Results.xlsx") # creates spreadsheet for results
         while m < len(Model_List):  # for each model needed for each scenario - model list contains 4 models
             generate_data(
                             f"{Model_List[m]}", 
-                            f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{Model_List[m]}/{Model_List[m]}_devc.csv", 
-                            f"{current_folder_path}/{Project_Name}/{Scenario_Names[n]}/{Model_List[m]}/{Model_List[m]}_hrr.csv", 
+                            f"{cfd_output_path}/{Scenario_Names[n]}/{Model_List[m]}/{Model_List[m]}_devc.csv", 
+                            f"{cfd_output_path}/{Scenario_Names[n]}/{Model_List[m]}/{Model_List[m]}_hrr.csv", 
                             f"{Scenario_Names[n]}",
                             results_dir, 
                             Project_Name,
@@ -691,7 +690,7 @@ def run_stage_three(current_folder_path=current_folder_path, project_name='NHBC 
 
 if __name__ == '__main__':
 
-    run_stage_three(current_folder_path)
+    run_stage_three(cfd_output_path=r'C:\Users\IanShaw\localProgramming\fd\open plan 2\openPlanCFD\CFD Test Output\NHBC 8x10')
     ''' testing saving decision tree '''
     # results_dir = rf'C:\Users\IanShaw\Dropbox\R&D\Open Plan Robot\Test Run for Ian\1. Input Variables\CFD Test Output\Roneo Corner - Smallest Flat\Kitchen_Fire_1'
     # results_file = 'Kitchen_Fire_1_Results.xlsx'

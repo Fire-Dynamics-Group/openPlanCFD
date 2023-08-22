@@ -16,7 +16,7 @@ def string_to_list_and_clean(string):  ## it reads the lists in the excel sheet 
     return list2
 
 from escape_probability import return_dataset_dict_from_curve
-# TODO: remove need for spreadsheets
+# TODO: take project name from path
 def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x10'):
     # pass
     Probability_Of_3m_Tenability_Limit = 0.3
@@ -175,10 +175,10 @@ def run_appendix(current_folder_path=current_folder_path, project_name='NHBC 8x1
             run_list[runs_per_lap].append(models_object)
             if len(run_list[runs_per_lap]) % 10 ==0:
                 print(f'###{runs_per_lap}: {len(run_list[runs_per_lap])}###')
-        # get average
+    # get average
         chart_data = prep_data(data=run_list)
         jsonString = json.dumps(chart_data)
-        jsonFile = open(f"{project_name}_etal.json", "w")
+        jsonFile = open(f"{project_name}_{runs_per_lap}x{multiplier}.json", "w")
         jsonFile.write(jsonString)
         jsonFile.close()
         pass
