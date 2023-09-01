@@ -30,16 +30,6 @@ class Tab1Content:
     def keybind_int_only(self, P):
         print(P)
         return self.int_validate(P)
-    
-    # def float_validate(self, string):
-    #     regex = re.compile(r"[0-9]*\.?[0-9]*$") # regex allows positive floats
-    #     result = regex.fullmatch(string)  # using fullmatch to ensure the entire string matches
-    #     return (string == "" 
-    #             or (string.count('.') <= 1
-    #                 and result is not None))
-
-    # def keybind_float_only(self, P):
-    #     return self.float_validate(P)
 
     ''' TODO: list of floats should be same length as number of rooms '''
     def float_list_validate(self, string):
@@ -104,8 +94,6 @@ class Tab1Content:
         self.label_td_Lounge.grid(row=current_row, column=0)
         self.entry_td_Lounge = tk.Entry(self.dwelling_details_frame, width=self.entrybox_width)
         self.entry_td_Lounge.grid(row=current_row, column=1)
-        # vcmd = (self.entry_td_Lounge.register(self.keybind_int_only), '%P') # , validate='key'
-        # self.entry_td_Lounge.config(validatecommand=vcmd)
 
         # Kitchens
         current_row += 1

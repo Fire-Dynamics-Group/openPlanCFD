@@ -202,6 +202,12 @@ def create_fds_base_model(Project_Name,
     worksheet.write(20,1,CC_Detection)
     worksheet.write(21,0,"Floor_To_Ceiling")
     worksheet.write(21,1,Floor_To_Ceiling)
+    worksheet.write(22,0,"sprinklered_room_area")
+    worksheet.write(22,1,sprinklered_room_area)
+    worksheet.write(23,0,"rti")
+    worksheet.write(23,1,rti)
+    worksheet.write(24,0,"tActive")
+    worksheet.write(24,1,tActive)
 
 
     workbook.close()

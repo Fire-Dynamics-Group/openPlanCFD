@@ -1,0 +1,41 @@
+{{PROJECT_NAME}}
+{{REASONS_FOR_STUDY}}
+
+{% if ONE_STOREY %}entrance hall{%- else -%}stair{% endif %}
+{% if ONLY_OPEN_KITCHEN %}entrance hall{%- else -%}stair{% endif %}
+ONLY_OPEN_KITCHEN
+
+{{FIRE_LOCATION}}
+
+{{P2PD}}
+{{HARMED_RATIO}}
+
+{% if ONE_STOREY %}entrance hall{%- else -%}stair{% endif %}
+ONE_STOREY
+
+{% if HAS_KITCHEN_FIRE %}entrance hall{%- else -%}{% endif %}
+{{FGR}}
+{{PD1_Area}}
+{{Other_Area}}
+{{PD1_HRR}}
+{{Other_HRR}}
+
+{{PD1_HPUA}}
+{{Other_HPUA}}
+{{PD1_peak_time}}
+{{PD1_time}}
+{{Other_peak_time}}
+
+{% if is_HRR_custom %}entrance hall{%- else -%}{% endif %}
+{% if not is_HRR_custom %}{% endif %}
+{% if not HAS_EXTENDED_TRAVEL %}
+{{FLOW_RATE}}
+{{PARTICLE_VEL}}
+{{CC_IS_LD3}}
+{{CC_IS_LD2}}
+{% if CC_IS_LD3 %}LD3{%- else -%}{% if CC_IS_LD2 %}LD2{%- else -%}LD1{% endif %}{% endif %}
+{{DIST}}
+{{C_H}}
+{{SP_A}}
+{{F_LO}}
+

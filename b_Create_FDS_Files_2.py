@@ -491,7 +491,13 @@ def Amend_FDS_File(
     print(f'{fn} saved')
     
 #### 3. Get / Define Variables 
-def draw_params_from_excel(path_to_dir, root_dir): 
+def draw_params_from_excel(
+                            path_to_dir, 
+                            root_dir,
+                            peak_fs_non_sprinkler,
+                            custom_fs_sprinkler,
+                            custom_sprinkler_distance
+                            ): 
     workbook = openpyxl.load_workbook(f"{path_to_dir}/{root_dir}/{root_dir} Variables.xlsx") # create spreadsheet and worksheet. This will be on the drive so other parts of the program can read it. 
     worksheet = workbook.active
 
@@ -518,10 +524,18 @@ def draw_params_from_excel(path_to_dir, root_dir):
     CC_Detection = (worksheet["B21"].value)
     Floor_To_Ceiling = float(worksheet["B22"].value)
 
+    names = ["peak_fs_non_sprinkler", "custom_fs_sprinkler", "custom_sprinkler_distance"]
+    for idx, total in enumerate([peak_fs_non_sprinkler,
+                            custom_fs_sprinkler,
+                            custom_sprinkler_distance
+                            ]):
+        
+        worksheet.write(25+idx,0,names[idx])
+        worksheet.write(25+idx,1,total)
     # sprinklerRoomArea=30 # send in from stage 1!
     roomHeight=2.5
-    rTI=90
-    tActive=68
+    rTI=90 # should be changeable??
+    tActive=68 # should be changeable??
 
     return  [Project_Name, 
             # Number_Of_Bedrooms, 
@@ -562,6 +576,7 @@ def run_stage_two(
         ):
 
 
+    # TODO: write inputs to excel and variables object
 
     # find path to txt file
     # TODO: extract file name
@@ -598,7 +613,7 @@ def run_stage_two(
     import ast
     import json
     if os.path.exists(path_txt):
-        with open(path_txt, 'r') as f:
+        with open(path_txt, 'w') as f:
             lines = json.loads(f.readlines()[0])
 
 
@@ -620,6 +635,17 @@ def run_stage_two(
     #         Floor_To_Ceiling = lines['Floor_To_Ceiling']
     #         rTI = lines['rti']
             sprinklered_room_area = lines['sprinklered_room_area']
+            model_object = lines
+
+            for item in [
+                peak_fs_non_sprinkler,
+                custom_fs_sprinkler,
+                custom_sprinkler_distance
+            ]:
+                var_name = [ i for i, a in locals().items() if a == item][0]
+                model_object[var_name] = item
+
+            json.dump(model_object, f)
     else:
         sprinklered_room_area = 30
     #         tActive = lines['tActive']
@@ -644,7 +670,13 @@ def run_stage_two(
     rTI,
     # sprinklered_room_area,
     tActive
-    ] = draw_params_from_excel(path_to_dir, root_dir)
+    ] = draw_params_from_excel(
+                                path_to_dir, 
+                                root_dir, 
+                                peak_fs_non_sprinkler,
+                                custom_fs_sprinkler,
+                                custom_sprinkler_distance
+                                )
    
 
     # b. new variables
