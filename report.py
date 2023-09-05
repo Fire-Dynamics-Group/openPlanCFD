@@ -47,34 +47,47 @@ def input_report_variables(
                             Proposed_Detection, 
                             CC_Detection,
                             Suppression_Type,
+                            
+                            cc_area = 30, # needs to be sent via gui
+                            author = 'Test McTest', # TODO: include in gui stage 3
+                            client = 'Test Client', # TODO: include in gui stage 3
+                            email = 'test',
                             # LATER: should access all scenarios
                             # TODO: pass in base folder and access scenarios from there
                             base_path = r'C:\Users\IanShaw\localProgramming\fd\open plan 2\openPlanCFD\CFD Test Output\Roneo Corner - Smallest Flat',
                             output_filename=Path(__file__).parent /"Report Template"/'test output report2.docx',
                             ):
+    import json
     today = datetime.datetime.today()
     # TODO: pull data from excel
     for scenario in Scenarios:
         results_path = f'{base_path}/{scenario}'
     
+    pd1_fds_path = f'{results_path}\PD1\PD1.fds'
+    cc1_fds_path = f'{results_path}\CC1\CC1.fds'
+    if os.path.exists(pd1_fds_path):
+        with open(pd1_fds_path, 'r') as f:
+            pd1_lines = f.readlines()
+        with open(cc1_fds_path, 'r') as f:
+            cc1_lines = f.readlines()
+    import re
+    pd1_hrrpua_line = [f for f in pd1_lines if 'HRRPUA=' in f][0]
+    pd1_hrrpua = re.findall(r"[-+]?(?:\d*\.*\d+)", pd1_hrrpua_line)
+    cc1_hrrpua_line = [f for f in cc1_lines if 'HRRPUA=' in f][0]
+    cc1_hrrpua = re.findall(r"[-+]?(?:\d*\.*\d+)", cc1_hrrpua_line)
+
     scen_data, scen_workbook = return_scen_excel(path_to_results_file=f'{results_path}\{scenario}_Results.xlsx')
     misc_chart_paths = run_scen_misc_charts(output_dir=results_path) 
     # read sprinkler area from txt file
 
-    import json
     path_txt = f'{base_path}\{Project_Name} Variables.txt'
     if os.path.exists(path_txt):
         with open(path_txt, 'r') as f:
             lines = json.loads(f.readlines()[0])
             sprinklered_room_area = lines['sprinklered_room_area']
     else:
-        sprinklered_room_area = 30     # TODO: CHECK If this exists in excel
+        sprinklered_room_area = 'TBC'     # TODO: CHECK If this exists in excel
 
-    pd1_path = f'{results_path}/PD1/PD1.fds'
-    with open(pd1_path, 'r') as f:
-        lines = f.readlines()
-
-    pass
     # {{PD1_START_ROOM}}
     PD1_START_ROOM = create_inline_image(image_file=misc_chart_paths['start_room']['PD1'])
     # {{PD1_VIS}}
@@ -187,9 +200,8 @@ def input_report_variables(
     if has_kitchen_above_8x4 and len(reasons_for_study_text_list) == 1:
         only_open_kitchen = True
 
-    '''CC1'''
-    CC1
-    '''CC2'''
+    cc1_para = f'This layout incorporates a protected {protected_area} and no fire suppression system. The fire door between the protected {protected_area} and room of fire origin is open when the fire simulation starts.'
+    cc2_para = f'This layout incorporates a protected {protected_area} and no fire suppression system. The fire door between the {protected_area} and room of fire origin is closed. Smoke can leak between the {protected_area} enclosure and the room of fire origin through the gaps in the door.'
 
     summary_statement = f'{protected_area} but with the provision of a suppression system, provides a level of safety which is at least as high as a code compliant design with a protected {protected_area} but no suppression' 
     
@@ -261,26 +273,29 @@ def input_report_variables(
         "CC2_HARMED": CC2_HARMED,
         "HARMED_RATIO": harmed_ratio,
         "ONE_STOREY": not is_multi_storey,
-        "AUTHOR_NAME": "Test Author", # TODO: include in gui stage 3
-        "CLIENT_NAME": "Test Client", # TODO: include in gui stage 3
+        "AUTHOR_NAME": author, # TODO: include in gui stage 3
+        "CLIENT_NAME": client, # TODO: include in gui stage 3
         "TODAYS_DATE": today,
+        "EMAIL": email,
         "PROJECT_NAME": Project_Name,
         "IS_MULTI_STOREY": is_multi_storey, 
         "REASONS_FOR_STUDY": reasons_for_study_text,
         "ONLY_OPEN_KITCHEN": only_open_kitchen,
         # use first location of fire for now
+        "CC1_PARA": cc1_para,
+        "CC2_PARA": cc2_para,
         "FIRE_LOCATION": fire_locations[0],
         "F_LO": fire_locations[0],
         "HAS_KITCHEN_FIRE": 'Kitchen' in fire_locations,
         "SUMMARY_STATEMENT": summary_statement,
         "FGR": fgr, 
         "PD1_Area": sprinklered_room_area, 
-        "Other_Area": 3.24, # TODO: include in gui stage 3
+        "Other_Area": cc_area, # TODO: include in gui stage 3
         "PD1_HRR": 402, 
         "P1_H": 402,
         "Other_HRR": 1500,
-        "PD1_HPUA": 500,
-        "Other_HPUA": 445,
+        "PD1_HPUA": round(float(pd1_hrrpua)),
+        "Other_HPUA": round(float(cc1_hrrpua)),
         "PD1_peak_time": 185,
         "P1_T": 185,
         "Other_peak_time": 358,
@@ -321,7 +336,10 @@ def prep_for_report_variables(
                                 cfd_output_path, 
                                 has_area_above_12x16,
                                 has_kitchen_above_8x4,
-                                is_multi_storey
+                                is_multi_storey,
+                                cc_area,
+                                author,
+                                email                                
                             ):
     project_name = os.path.basename(cfd_output_path)
     Number_Of_Bedrooms, Number_Of_Lounges, Number_Of_Kitchens, Kitchen_Fires, Suppression_Type, Lounge_Fires, Bedroom_Fires, No_Scenarios, Proposed_Detection, CC_Detection, Floor_To_Ceiling, Scenario_Names, Project_Name, TD_From_Bedrooms, TD_From_Lounges, TD_From_Kitchens = return_excel_data(cfd_output_path, project_name)
@@ -352,6 +370,9 @@ def prep_for_report_variables(
                             Proposed_Detection, 
                             CC_Detection,
                             Suppression_Type,
+                            cc_area,
+                            author,
+                            email,
                             base_path=cfd_output_path,
                             )
 
@@ -363,5 +384,8 @@ if __name__ == "__main__":
                                     cfd_output_path=r'C:\Users\IanShaw\localProgramming\fd\open plan 2\openPlanCFD\CFD Test Output\Roneo Corner - Smallest Flat', 
                                     has_area_above_12x16 = True,
                                     has_kitchen_above_8x4 = True,
-                                    is_multi_storey = False
+                                    is_multi_storey = False,
+                                    cc_area=30,
+                                    author='Test Author',
+                                    email='test'
                                 )

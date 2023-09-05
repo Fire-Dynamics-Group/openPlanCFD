@@ -32,6 +32,7 @@ class Application(tk.Frame):
         entrybox_width = 50
 
         # Fire Dynamics AI
+        
         path = "FDAI_grey.jpg"
         open_image = Image.open(path).resize((60, 90), Image.Resampling.LANCZOS) # Image.ANTIALIAS deprecated to LANCZOS
 

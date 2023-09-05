@@ -15,6 +15,7 @@ class Tab3Content:
       self.entrybox_width = 50
       self.has_multiple_storeys = tk.StringVar()
       self.has_greater_12x16 = tk.StringVar()
+      self.has_kit_greater_8x4 = tk.StringVar()
       self.interface(open_img)
 
     def interface(self, open_img):
@@ -41,7 +42,7 @@ class Tab3Content:
         self.multiple_storeys_selector2.grid(row=current_row, column=2)
         current_row += 1
         # if flat exceeds 12 x 16
-        self.label_greater_12x16 = tk.Label(self.master, text="Is the apartment multi-storeyed? ", width=self.label_width, anchor="e")
+        self.label_greater_12x16 = tk.Label(self.master, text="Does the flat exceed 12m x 16m? ", width=self.label_width, anchor="e")
         self.label_greater_12x16.grid(row=current_row, column=0)
         self.has_greater_12x16.set("False")
         self.greater_12x16_selector1 = tk.Radiobutton(self.master, text="True",
@@ -51,7 +52,41 @@ class Tab3Content:
                                                 variable=self.has_greater_12x16, value="False", font=("Poppins Light", 8))
         self.greater_12x16_selector2.grid(row=current_row, column=2)
         # if has open kitchen and exceeds 8 x 12
-        ''' TODO: add this in later '''
+        current_row += 1
+        self.label_kit_greater_8x4 = tk.Label(self.master, text="Open kitchen and the flat exceeds 8m x 4m? ", width=self.label_width, anchor="e")
+        self.label_kit_greater_8x4.grid(row=current_row, column=0)
+        self.has_kit_greater_8x4.set("False")
+        self.kit_greater_8x4_selector1 = tk.Radiobutton(self.master, text="True",
+                                                variable=self.has_kit_greater_8x4, value="True", font=("Poppins Light", 8))
+        self.kit_greater_8x4_selector1.grid(row=current_row, column=1)
+        self.kit_greater_8x4_selector2 = tk.Radiobutton(self.master, text="False",
+                                                variable=self.has_kit_greater_8x4, value="False", font=("Poppins Light", 8))
+        self.kit_greater_8x4_selector2.grid(row=current_row, column=2)
+        # cc area
+        current_row += 1
+        self.label_cc_area = tk.Label(self.master, text="Code Compliant Fire Room Area(m): ", width=self.label_width, anchor="e")
+        self.label_cc_area.grid(row=current_row, column=0)
+        self.entry_cc_area = tk.Entry(self.master, width=75)
+        self.entry_cc_area.grid(row=current_row, column=1)  
+        # author name
+        current_row += 1
+        self.label_author = tk.Label(self.master, text="Author Name: ", width=self.label_width, anchor="e")
+        self.label_author.grid(row=current_row, column=0)
+        self.entry_author = tk.Entry(self.master, width=75)
+        self.entry_author.grid(row=current_row, column=1)  
+        # author email prefix
+        current_row += 1
+        self.label_email = tk.Label(self.master, text="Author email prefix: ", width=self.label_width, anchor="e")
+        self.label_email.grid(row=current_row, column=0)
+        self.entry_email = tk.Entry(self.master, width=75)
+        self.entry_email.grid(row=current_row, column=1)  
+        # client name
+        current_row += 1
+        self.label_client = tk.Label(self.master, text="Client Name: ", width=self.label_width, anchor="e")
+        self.label_client.grid(row=current_row, column=0)
+        self.entry_client = tk.Entry(self.master, width=75)
+        self.entry_client.grid(row=current_row, column=1) 
+
 
         ##### Output #####
         current_row += 5
@@ -89,7 +124,11 @@ class Tab3Content:
         # TODO: add in other inputs
         has_multiple_storeys = self.has_multiple_storeys.get()
         has_greater_12x16 = self.has_greater_12x16.get()
-        has_kitchen_above_8x4=True
+        has_kitchen_above_8x4=self.has_kit_greater_8x4.get()
+        cc_area = self.entry_cc_area.get()
+        author = self.entry_author.get()
+        email = self.entry_email.get()
+        client = self.entry_client.get()
         # run_stage_three(folder_path)
         from report import prep_for_report_variables
         # first run below from here
@@ -98,7 +137,10 @@ class Tab3Content:
                                 cfd_output_path=folder_path, 
                                 has_area_above_12x16=has_greater_12x16,
                                 has_kitchen_above_8x4=has_kitchen_above_8x4,
-                                is_multi_storey=has_multiple_storeys
+                                is_multi_storey=has_multiple_storeys,
+                                cc_area=cc_area,
+                                author=author,
+                                email=email
                             )
         # input_report_variables(
         #                     has_area_above_12x16=has_greater_12x16,
